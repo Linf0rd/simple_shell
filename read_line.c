@@ -10,17 +10,18 @@ char *read_line(void)
 {
 	char *line = NULL;
 	size_t bufsize = 0;
+	ssize_t characters_read;
 
-	if (getline(&line, &bufsize, stdin) == -1)
+	characters_read = getline(&line, &bufsize, stdin);
+	if (characters_read == -1)
 	{
 		if (feof(stdin))
 		{
-			write(STDOUT_FILENO, "\n", 1);
 			if (line != NULL)
 			{
 				free(line);
 			}
-			exit(EXIT_SUCCESS);
+			exit (EXIT_SUCCESS);
 		}
 		else
 		{
@@ -32,10 +33,10 @@ char *read_line(void)
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (line == NULL)
+	if (characters_read > 0 && line[characters_read - 1] == '\n')
 	{
-		fprintf(stderr, "read_line: Null line\n");
-		return (NULL);
+		line[characters_read - 1] = '\0';
 	}
+
 	return (line);
 }

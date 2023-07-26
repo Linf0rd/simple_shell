@@ -16,8 +16,7 @@ int execute(char **args, char *name)
 
 	if (args == NULL || name == NULL)
 	{
-		fprintf(stderr, "execute: Null argument\n");
-		return (0);
+		return (args == NULL) ? 0 : -1;
 	}
 	pid = fork();
 	if (pid == -1)
@@ -30,8 +29,6 @@ int execute(char **args, char *name)
 		if (execve(args[0], args, NULL) == -1)
 		{
 			fprintf(stderr, "%s: 1: %s: not found\n", name, args[0]);
-			free(name);
-			free_args(args);
 			exit(EXIT_FAILURE);
 		}
 	}

@@ -16,7 +16,6 @@ void free_args(char **args)
 	}
 	while (args[x])
 	{
-		if (args[x] != NULL)
 			free(args[x]);
 		x++;
 	}

@@ -15,7 +15,6 @@ char **split_line(char *line, char *delim)
 	int position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
 	char *token;
-	int x;
 
 	if (line == NULL)
 	{
@@ -33,9 +32,6 @@ char **split_line(char *line, char *delim)
 		tokens[position] = strdup(token);
 		if (tokens[position] == NULL)
 		{
-			for (x = 0; x < position; x++)
-				free(tokens[x]);
-			free(tokens);
 			perror("split_line");
 			exit(EXIT_FAILURE);
 		}
@@ -46,11 +42,8 @@ char **split_line(char *line, char *delim)
 			tokens = realloc(tokens, bufsize * sizeof(char *));
 			if (!tokens)
 			{
-				for (x = 0; x < position; x++)
-					free(tokens[x]);
-				free(token);
-				free(tokens);
 				perror("split_line");
+				free(token);
 				exit(EXIT_FAILURE);
 			}
 		}
