@@ -14,10 +14,15 @@ int execute(char **args, char *name)
 	pid_t pid;
 	int status;
 
+	if (args == NULL || name == NULL)
+	{
+		fprintf(stderr, "execute: Null argument\n");
+		return (0);
+	}
 	pid = fork();
 	if (pid == -1)
 	{
-		perror(name);
+		perror("fork");
 		return (0);
 	}
 	else if (pid == 0)

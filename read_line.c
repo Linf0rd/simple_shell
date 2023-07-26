@@ -24,5 +24,10 @@ char *read_line(void)
 			exit(EXIT_FAILURE);
 		}
 	}
+	if (line == NULL)
+	{
+		fprintf(stderr, "read_line: Null line\n");
+		return (NULL);
+	}
 	return (line);
 }

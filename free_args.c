@@ -9,6 +9,11 @@ void free_args(char **args)
 {
 	int x = 0;
 
+	if (args == NULL)
+	{
+		fprintf(stderr, "free_args: Null argument\n");
+		return;
+	}
 	while (args[x])
 	{
 		if (args[x] != NULL)

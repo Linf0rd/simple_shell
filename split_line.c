@@ -17,12 +17,17 @@ char **split_line(char *line, char *delim)
 	char *token;
 	int x;
 
+	if (line == NULL)
+	{
+		fprintf(stderr, "split_line: Null line\n");
+		return (NULL);
+	}
 	if (!tokens)
 	{
 		perror("split_line");
 		exit(EXIT_FAILURE);
 	}
-	token = strtok(line, " \t\n");
+	token = strtok(line, delim);
 	while (token != NULL)
 	{
 		tokens[position] = strdup(token);
