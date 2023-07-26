@@ -15,10 +15,11 @@ char **split_line(char *line, char *delim)
 	int position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
 	char *token;
+	int x;
 
 	if (!tokens)
 	{
-		perror("#cisfun$");
+		perror("split_line");
 		exit(EXIT_FAILURE);
 	}
 	token = strtok(line, " \t\n");
@@ -32,7 +33,10 @@ char **split_line(char *line, char *delim)
 			tokens = realloc(tokens, bufsize * sizeof(char *));
 			if (!tokens)
 			{
-				perror("#cisfun$");
+				for (x = 0; x < position; x++)
+					free(tokens[x]);
+				free(tokens);
+				perror("split_line");
 				exit(EXIT_FAILURE);
 			}
 		}
