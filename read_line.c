@@ -20,7 +20,7 @@ char *read_line(void)
 		}
 		else
 		{
-			perror("#cisfun$");
+			perror("read_line");
 			exit(EXIT_FAILURE);
 		}
 	}
