@@ -7,5 +7,5 @@
 void prompt(void)
 {
 	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "#cisfun$ ", 10);
+		write(STDOUT_FILENO, "hsh ", 5);
 }
