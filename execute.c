@@ -4,6 +4,8 @@
  * execute - Execute a command.
  * @args: The command and its arguments.
  *
+ * @name: The name of the command.
+ *
  * Return: 1 on success, 0 on failure.
  */
 
