@@ -4,6 +4,8 @@
  * split_line - Splits a line into tokens.
  * @line: The line meant to be split.
  *
+ * @delim: The delimiter used for splitting the line.
+ *
  * Return: An array of tokens.
  */
 
