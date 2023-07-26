@@ -7,10 +7,12 @@
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <signal.h>
 
 char **split_line(char *line, char *delim);
 void prompt(void);
 int execute(char **args, char *name);
 void free_args(char **args);
 char *read_line(void);
+
 #endif /* SHELL_H */

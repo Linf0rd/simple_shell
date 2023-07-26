@@ -31,6 +31,14 @@ char **split_line(char *line, char *delim)
 	while (token != NULL)
 	{
 		tokens[position] = strdup(token);
+		if (tokens[position] == NULL)
+		{
+			for (x = 0; x < position; x++)
+				free(tokens[x]);
+			free(tokens);
+			perror("split_line");
+			exit(EXIT_FAILURE);
+		}
 		position++;
 		if (position >= bufsize)
 		{
@@ -40,6 +48,7 @@ char **split_line(char *line, char *delim)
 			{
 				for (x = 0; x < position; x++)
 					free(tokens[x]);
+				free(token);
 				free(tokens);
 				perror("split_line");
 				exit(EXIT_FAILURE);

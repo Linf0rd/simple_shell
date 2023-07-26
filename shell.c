@@ -16,6 +16,11 @@ int main(void)
 		prompt();
 		line = read_line();
 		args = split_line(line, " \t\n");
+		if (args == NULL)
+		{
+			free(line);
+			continue;
+		}
 		status = execute(args, args[0]);
 		free(line);
 		free_args(args);

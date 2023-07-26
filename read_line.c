@@ -16,11 +16,19 @@ char *read_line(void)
 		if (feof(stdin))
 		{
 			write(STDOUT_FILENO, "\n", 1);
+			if (line != NULL)
+			{
+				free(line);
+			}
 			exit(EXIT_SUCCESS);
 		}
 		else
 		{
 			perror("read_line");
+			if (line != NULL)
+			{
+				free(line);
+			}
 			exit(EXIT_FAILURE);
 		}
 	}
