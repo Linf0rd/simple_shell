@@ -26,7 +26,7 @@ int main(void)
 		free_args(args);
 	}
 
-	while (status == 1);
+	while (status != 0);
 
 	return (0);
 }

@@ -18,6 +18,10 @@ int execute(char **args, char *name)
 	{
 		return ((args == NULL) ? 0 : -1);
 	}
+	if (strcmp(args[0], "exit") == 0)
+	{
+		return (0);
+	}
 	cmd_path = get_cmd_path(args[0]);
 	if (cmd_path == NULL)
 	{
