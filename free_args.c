@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * free_args - Free the memory allocated for the arguments array.
+ * free_args  - Free the memory allocated for the arguments array.
  * @args: The arguments array.
  */
 
@@ -16,7 +16,7 @@ void free_args(char **args)
 	}
 	while (args[x])
 	{
-			free(args[x]);
+		free(args[x]);
 		x++;
 	}
 	free(args);

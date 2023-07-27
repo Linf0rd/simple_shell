@@ -21,7 +21,7 @@ char *read_line(void)
 			{
 				free(line);
 			}
-			exit (EXIT_SUCCESS);
+			exit(EXIT_SUCCESS);
 		}
 		else
 		{

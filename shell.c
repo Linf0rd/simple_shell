@@ -15,7 +15,7 @@ int main(void)
 	do {
 		prompt();
 		line = read_line();
-		args = split_line(line, " \t\n");
+		args = split_line(line, " \t\t");
 		if (args == NULL)
 		{
 			free(line);
