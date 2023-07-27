@@ -1,5 +1,7 @@
 #include "shell.h"
 
+extern char **environ;
+
 /**
  * execute - Execute a command.
  * @args: The command and its arguments.
@@ -13,6 +15,7 @@ int execute(char **args, char *name)
 	pid_t pid;
 	int status;
 	char *cmd_path;
+	int x;
 
 	if (args == NULL || name == NULL)
 	{
@@ -21,6 +24,14 @@ int execute(char **args, char *name)
 	if (strcmp(args[0], "exit") == 0)
 	{
 		return (0);
+	}
+	if (strcmp(args[0], "env") == 0)
+	{
+		for (x = 0; environ[x] != NULL; x++)
+		{
+			printf("%s\n", environ[x]);
+		}
+		return (1);
 	}
 	cmd_path = get_cmd_path(args[0]);
 	if (cmd_path == NULL)
