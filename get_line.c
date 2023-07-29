@@ -40,7 +40,10 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 			break;
 	}
 	if (index == 0)
+	{
+		free(buffer);
 		return (-1);
+	}
 
 	buffer[index] = '\0';
 	*lineptr = buffer;
