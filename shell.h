@@ -16,5 +16,6 @@ int execute(char **args, char *name);
 char *read_line(void);
 char *get_cmd_path(char *cmd);
 void free_args(char **args);
+ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
 
 #endif /* SHELL_H */
