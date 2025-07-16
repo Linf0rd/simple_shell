@@ -8,7 +8,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
+
 #include <sys/stat.h>
+#include "tokenizer.h"
 
 char **split_line(char *line, char *delim);
 void prompt(void);
