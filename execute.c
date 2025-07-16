@@ -13,36 +13,36 @@ extern char **environ;
 int execute(char **args, char *name)
 {
 	pid_t pid;
-	int status;
+	int status, x;
 	char *cmd_path;
-	int x;
+
+	/* Betty: variable declarations at top */
 
 	if (args == NULL || name == NULL)
-	{
 		return ((args == NULL) ? 0 : -1);
-	}
+
 	if (strcmp(args[0], "exit") == 0)
-	{
 		return (0);
-	}
+
 	if (strcmp(args[0], "env") == 0)
 	{
 		for (x = 0; environ[x] != NULL; x++)
-		{
 			printf("%s\n", environ[x]);
-		}
 		return (1);
 	}
+
 	cmd_path = get_cmd_path(args[0]);
 	if (cmd_path == NULL)
 	{
 		fprintf(stderr, "%s: 1: %s: not found\n", name, args[0]);
 		return (0);
 	}
+
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
+		free(cmd_path);
 		return (0);
 	}
 	else if (pid == 0)
@@ -50,6 +50,7 @@ int execute(char **args, char *name)
 		if (execve(cmd_path, args, NULL) == -1)
 		{
 			fprintf(stderr, "%s: 1: %s: not found\n", name, args[0]);
+			free(cmd_path);
 			exit(EXIT_FAILURE);
 		}
 	}

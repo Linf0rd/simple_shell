@@ -7,7 +7,9 @@
 
 void free_args(char **args)
 {
-	int x = 0;
+	int x;
+
+	x = 0;
 
 	if (args == NULL)
 	{
@@ -17,6 +19,7 @@ void free_args(char **args)
 	while (args[x])
 	{
 		free(args[x]);
+		args[x] = NULL;
 		x++;
 	}
 	free(args);

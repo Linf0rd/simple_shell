@@ -6,6 +6,11 @@
 
 void prompt(void)
 {
+	int written;
+
 	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "($) ", 4);
+	{
+		written = write(STDOUT_FILENO, "($) ", 4);
+		(void)written;
+	}
 }

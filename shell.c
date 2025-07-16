@@ -12,6 +12,8 @@ int main(void)
 	char **args;
 	int status;
 
+	/* Betty: variable declarations at top */
+
 	do {
 		prompt();
 		line = read_line();
@@ -25,7 +27,6 @@ int main(void)
 		free(line);
 		free_args(args);
 	}
-
 	while (status != 0);
 
 	return (0);

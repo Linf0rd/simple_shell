@@ -11,11 +11,13 @@
 
 ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 {
-	char *buffer = NULL;
-	char *temp = NULL;
-	int buffer_size = 80;
-	int index = 0;
-	int c;
+	char *buffer, *temp;
+	int buffer_size, index, c;
+
+	buffer = NULL;
+	temp = NULL;
+	buffer_size = 80;
+	index = 0;
 
 	if (lineptr == NULL || n == NULL || stream == NULL)
 		return (-1);
