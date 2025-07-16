@@ -45,6 +45,28 @@ char *replace_vars(const char *cmd, int last_status)
 				i += 2;
 				continue;
 			}
+			else if (cmd[i + 1] == '{')
+			{
+				int var_start = i + 2, var_len = 0;
+				while (cmd[var_start + var_len] && cmd[var_start + var_len] != '}')
+					var_len++;
+				if (cmd[var_start + var_len] == '}')
+				{
+					char varname[128];
+					if (var_len > 127)
+						var_len = 127;
+					strncpy(varname, cmd + var_start, var_len);
+					varname[var_len] = '\0';
+					env = getenv(varname);
+					if (env)
+					{
+						strcpy(p, env);
+						p += strlen(env);
+					}
+					i += 2 + var_len + 1;
+					continue;
+				}
+			}
 			else if ((cmd[i + 1] >= 'A' && cmd[i + 1] <= 'Z') ||
 					 (cmd[i + 1] >= 'a' && cmd[i + 1] <= 'z') ||
 					 (cmd[i + 1] == '_'))
@@ -56,6 +78,8 @@ char *replace_vars(const char *cmd, int last_status)
 					   (cmd[var_start + var_len] == '_'))
 					var_len++;
 				char varname[128];
+				if (var_len > 127)
+					var_len = 127;
 				strncpy(varname, cmd + var_start, var_len);
 				varname[var_len] = '\0';
 				env = getenv(varname);
