@@ -60,7 +60,10 @@ int main(void)
 				size_t chunk_len = next_sep - logic_line;
 				cmd_chunk = malloc(chunk_len + 1);
 				if (!cmd_chunk)
+				{
+					free(line);
 					break;
+				}
 				strncpy(cmd_chunk, logic_line, chunk_len);
 				cmd_chunk[chunk_len] = '\0';
 			}
@@ -68,7 +71,10 @@ int main(void)
 			{
 				cmd_chunk = strdup(logic_line);
 				if (!cmd_chunk)
+				{
+					free(line);
 					break;
+				}
 			}
 
 			/* Remove comments from chunk */
@@ -96,7 +102,10 @@ int main(void)
 				if (cmd_with_vars)
 					free(cmd_with_vars);
 				if (args == NULL)
+				{
+					/* Handle empty or invalid input */
 					continue;
+				}
 				if (args[0] == NULL)
 				{
 					free_args(args);
@@ -111,8 +120,43 @@ int main(void)
 						args[0] = strdup(alias_val);
 					}
 				}
+				/* Edge case: background job support */
+				int run_bg = 0;
+				int last_arg = 0;
+				while (args[last_arg + 1])
+					last_arg++;
+				if (args[last_arg] && strcmp(args[last_arg], "&") == 0)
+				{
+					run_bg = 1;
+					free(args[last_arg]);
+					args[last_arg] = NULL;
+				}
 				if (do_exec)
-					last_status = status = execute(args, args[0]);
+				{
+					if (run_bg)
+					{
+						/* Run in background: fork and do not wait */
+						pid_t pid = fork();
+						if (pid == 0)
+						{
+							execute(args, args[0]);
+							exit(0);
+						}
+						else if (pid > 0)
+						{
+							printf("[background pid %d]\n", pid);
+						}
+						else
+						{
+							perror("fork");
+						}
+						last_status = status;
+					}
+					else
+					{
+						last_status = status = execute(args, args[0]);
+					}
+				}
 				free_args(args);
 			}
 			for (j = 0; cmds[j] != NULL; j++)
