@@ -98,78 +98,83 @@ int main(void)
 			}
 			for (j = 0; cmds[j] != NULL; j++)
 			{
-				char *cmd_to_run = cmds[j];
-				/* Support !! for last command */
-				if (strcmp(cmds[j], "!!") == 0)
+				/* Pipe support: split by '|' and set up pipes */
+				char **pipe_cmds = tokenize(cmds[j], "|");
+				int num_pipes = 0, k = 0;
+				while (pipe_cmds && pipe_cmds[num_pipes]) num_pipes++;
+				int prev_fd = -1;
+				for (k = 0; pipe_cmds && pipe_cmds[k]; k++)
 				{
-					const char *last = get_last_history();
-					if (last)
-						cmd_to_run = (char *)last;
-					else
-						continue;
-				}
-				add_history(cmd_to_run);
-				char *cmd_with_vars = replace_vars(cmd_to_run, last_status);
-				char **args = split_line(cmd_with_vars ? cmd_with_vars : cmd_to_run, " \t\t");
-				if (cmd_with_vars)
-					free(cmd_with_vars);
-				if (args == NULL)
-				{
-					/* Handle empty or invalid input */
-					continue;
-				}
-				if (args[0] == NULL)
-				{
-					free_args(args);
-					continue;
-				}
-				/* Alias expansion: replace first arg with alias value if exists */
-				{
-					const char *alias_val = get_alias(args[0]);
-					if (alias_val)
+					int pipefd[2];
+					int is_last = (k == num_pipes - 1);
+					if (!is_last)
+						pipe(pipefd);
+					pid_t pid = fork();
+					if (pid == 0)
 					{
-						free(args[0]);
-						args[0] = strdup(alias_val);
-					}
-				}
-				/* Edge case: background job support */
-				int run_bg = 0;
-				int last_arg = 0;
-				while (args[last_arg + 1])
-					last_arg++;
-				if (args[last_arg] && strcmp(args[last_arg], "&") == 0)
-				{
-					run_bg = 1;
-					free(args[last_arg]);
-					args[last_arg] = NULL;
-				}
-				if (do_exec)
-				{
-					if (run_bg)
-					{
-						/* Run in background: fork and do not wait */
-						pid_t pid = fork();
-						if (pid == 0)
+						if (prev_fd != -1)
 						{
-							execute(args, args[0]);
+							dup2(prev_fd, 0);
+							close(prev_fd);
+						}
+						if (!is_last)
+						{
+							close(pipefd[0]);
+							dup2(pipefd[1], 1);
+							close(pipefd[1]);
+						}
+						/* Parse and exec the command */
+						char *cmd_to_run = pipe_cmds[k];
+						if (strcmp(cmd_to_run, "!!") == 0)
+						{
+							const char *last = get_last_history();
+							if (last)
+								cmd_to_run = (char *)last;
+						}
+						add_history(cmd_to_run);
+						char *cmd_with_vars = replace_vars(cmd_to_run, last_status);
+						char **args = split_line(cmd_with_vars ? cmd_with_vars : cmd_to_run, " \t\t");
+						if (cmd_with_vars)
+							free(cmd_with_vars);
+						if (args == NULL || args[0] == NULL)
 							exit(0);
-						}
-						else if (pid > 0)
+						/* Alias expansion */
 						{
-							printf("[background pid %d]\n", pid);
+							const char *alias_val = get_alias(args[0]);
+							if (alias_val)
+							{
+								free(args[0]);
+								args[0] = strdup(alias_val);
+							}
 						}
-						else
-						{
-							perror("fork");
-						}
-						last_status = status;
+						execute(args, args[0]);
+						free_args(args);
+						exit(0);
 					}
-					else
+					else if (pid > 0)
 					{
-						last_status = status = execute(args, args[0]);
+						if (prev_fd != -1)
+							close(prev_fd);
+						if (!is_last)
+						{
+							close(pipefd[1]);
+							prev_fd = pipefd[0];
+						}
+						else if (prev_fd != -1)
+						{
+							close(prev_fd);
+						}
+						waitpid(pid, NULL, 0);
 					}
 				}
-				free_args(args);
+				/* Free pipe_cmds */
+				if (pipe_cmds)
+				{
+					int t = 0;
+					while (pipe_cmds[t])
+						free(pipe_cmds[t++]);
+					free(pipe_cmds);
+				}
 			}
 			for (j = 0; cmds[j] != NULL; j++)
 				free(cmds[j]);
