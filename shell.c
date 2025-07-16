@@ -12,6 +12,7 @@ int main(void)
 	char **args;
 	int status;
 
+	load_history();
 	do {
 		int i = 0;
 		char **cmds = NULL;
@@ -182,5 +183,7 @@ int main(void)
 	}
 	while (status != 0);
 
+	save_history();
+	free_history();
 	return (0);
 }
