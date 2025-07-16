@@ -16,8 +16,6 @@ int execute(char **args, char *name)
 	int status, x;
 	char *cmd_path;
 
-	/* Betty: variable declarations at top */
-
 	if (args == NULL || name == NULL)
 		return ((args == NULL) ? 0 : -1);
 
@@ -28,6 +26,44 @@ int execute(char **args, char *name)
 	{
 		for (x = 0; environ[x] != NULL; x++)
 			printf("%s\n", environ[x]);
+		return (1);
+	}
+
+	if (strcmp(args[0], "setenv") == 0)
+	{
+		if (args[1] && args[2])
+		{
+			if (setenv(args[1], args[2], 1) == -1)
+				perror("setenv");
+		}
+		else
+		{
+			fprintf(stderr, "Usage: setenv VARIABLE VALUE\n");
+		}
+		return (1);
+	}
+
+	if (strcmp(args[0], "unsetenv") == 0)
+	{
+		if (args[1])
+		{
+			if (unsetenv(args[1]) == -1)
+				perror("unsetenv");
+		}
+		else
+		{
+			fprintf(stderr, "Usage: unsetenv VARIABLE\n");
+		}
+		return (1);
+	}
+
+	if (strcmp(args[0], "cd") == 0)
+	{
+		char *dir = args[1];
+		if (!dir)
+			dir = getenv("HOME");
+		if (chdir(dir) == -1)
+			perror("cd");
 		return (1);
 	}
 

@@ -10,6 +10,7 @@
 #include <signal.h>
 
 #include <sys/stat.h>
+#include "var_replace.h"
 #include "tokenizer.h"
 
 char **split_line(char *line, char *delim);
