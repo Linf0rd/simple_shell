@@ -11,6 +11,31 @@ extern char **environ;
  */
 
 int execute(char **args, char *name)
+	/* Alias built-in */
+	if (strcmp(args[0], "alias") == 0)
+	{
+		if (!args[1])
+		{
+			print_aliases();
+		}
+		else if (strchr(args[1], '=') != NULL)
+		{
+			char *eq = strchr(args[1], '=');
+			size_t nlen = eq - args[1];
+			char namebuf[128], valbuf[256];
+			strncpy(namebuf, args[1], nlen);
+			namebuf[nlen] = '\0';
+			strcpy(valbuf, eq + 1);
+			set_alias(namebuf, valbuf);
+		}
+		else if (args[1])
+		{
+			const char *val = get_alias(args[1]);
+			if (val)
+				printf("alias %s='%s'\n", args[1], val);
+		}
+		return (1);
+	}
 {
 	pid_t pid;
 	int status, x;

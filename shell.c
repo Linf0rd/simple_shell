@@ -102,6 +102,15 @@ int main(void)
 					free_args(args);
 					continue;
 				}
+				/* Alias expansion: replace first arg with alias value if exists */
+				{
+					const char *alias_val = get_alias(args[0]);
+					if (alias_val)
+					{
+						free(args[0]);
+						args[0] = strdup(alias_val);
+					}
+				}
 				if (do_exec)
 					last_status = status = execute(args, args[0]);
 				free_args(args);
