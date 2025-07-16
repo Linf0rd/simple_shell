@@ -47,6 +47,39 @@ int execute(char **args, char *name)
 	int status, x;
 	char *cmd_path;
 
+	int in_redirect = -1, out_redirect = -1, append = 0;
+	int i, j, argc = 0;
+	char *infile = NULL, *outfile = NULL;
+	/* Count args */
+	while (args[argc]) argc++;
+	/* Parse for redirection */
+	for (i = 0; i < argc; i++) {
+		if (strcmp(args[i], ">") == 0 || strcmp(args[i], ">>") == 0) {
+			append = (strcmp(args[i], ">>") == 0);
+			if (args[i+1]) {
+				outfile = args[i+1];
+				out_redirect = i;
+			}
+		} else if (strcmp(args[i], "<") == 0) {
+			if (args[i+1]) {
+				infile = args[i+1];
+				in_redirect = i;
+			}
+		}
+	}
+	/* Remove redirection tokens from args */
+	if (out_redirect != -1) {
+		for (j = out_redirect; args[j+2]; j++)
+			args[j] = args[j+2];
+		args[j] = NULL;
+		argc -= 2;
+	}
+	if (in_redirect != -1) {
+		for (j = in_redirect; args[j+2]; j++)
+			args[j] = args[j+2];
+		args[j] = NULL;
+		argc -= 2;
+	}
 	if (args == NULL || name == NULL)
 		return ((args == NULL) ? 0 : -1);
 
