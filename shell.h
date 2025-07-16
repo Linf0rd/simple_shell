@@ -13,6 +13,7 @@
 #include "var_replace.h"
 #include "tokenizer.h"
 #include "alias.h"
+#include "history.h"
 
 char **split_line(char *line, char *delim);
 void prompt(void);

@@ -97,8 +97,19 @@ int main(void)
 			}
 			for (j = 0; cmds[j] != NULL; j++)
 			{
-				char *cmd_with_vars = replace_vars(cmds[j], last_status);
-				char **args = split_line(cmd_with_vars ? cmd_with_vars : cmds[j], " \t\t");
+				char *cmd_to_run = cmds[j];
+				/* Support !! for last command */
+				if (strcmp(cmds[j], "!!") == 0)
+				{
+					const char *last = get_last_history();
+					if (last)
+						cmd_to_run = (char *)last;
+					else
+						continue;
+				}
+				add_history(cmd_to_run);
+				char *cmd_with_vars = replace_vars(cmd_to_run, last_status);
+				char **args = split_line(cmd_with_vars ? cmd_with_vars : cmd_to_run, " \t\t");
 				if (cmd_with_vars)
 					free(cmd_with_vars);
 				if (args == NULL)

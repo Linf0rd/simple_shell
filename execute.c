@@ -11,6 +11,12 @@ extern char **environ;
  */
 
 int execute(char **args, char *name)
+	/* History built-in */
+	if (strcmp(args[0], "history") == 0)
+	{
+		print_history();
+		return (1);
+	}
 	/* Alias built-in */
 	if (strcmp(args[0], "alias") == 0)
 	{
